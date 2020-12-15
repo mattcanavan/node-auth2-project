@@ -114,3 +114,6 @@ auth.db3
 
 # .env
 .env
+
+# secrets.js
+secrets.js
