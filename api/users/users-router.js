@@ -1,10 +1,10 @@
 const router = require("express").Router();
 
 const Users = require("./users-model.js");
-
+const restricted = require("../auth/restrict-access-middleware.js");
 
 /// ENDPOINTS
-router.get("/", (req, res) => {
+router.get("/", restricted, (req, res) => {
   // :PORT/api/users
   Users.find()
     .then(userList => {

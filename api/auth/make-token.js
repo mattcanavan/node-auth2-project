@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { jwtSecret } = require('./secrets.js')
+const { jwtSecret } = require('./secrets.js');
 
 module.exports = {
     makeToken(userObj) {

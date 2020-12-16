@@ -1,9 +1,7 @@
 const bcryptjs = require("bcryptjs");
 const router = require("express").Router();
-const jwt = require("jsonwebtoken");
-const { jwtSecret } = require("./secrets.js");
-const { makeToken } = require("./make-token.js");
 
+const { makeToken } = require("./make-token.js");
 const Users = require("../users/users-model.js");
 const { isValid } = require("../users/users-service.js");
 
@@ -42,14 +40,19 @@ router.post("/login", (req,res) => {
     if (isValid(req.body)) {
         Users.findBy({ username: username })
         .then(data => {
-            const [user] = data; //sets user to first item in data collection (only one item/obj will ever be returned)
+
+            //make sure username exists
+            if (!data.length) { return res.status(401).json({ message: "Invalid credentials" }); }
+
+            //sets user to first item in data collection (only one item/obj will ever be returned since username are unique)
+            const [user] = data; 
 
             if (user && bcryptjs.compareSync(password, user.password)) {
 
                 //create a token
                 const token = makeToken(user)
 
-                //send token to browser
+                //send token to requestor
                 res.status(200).json({ message: "Welcome to the API, " + user.username, token});
             } else {
                 //bad password or username
