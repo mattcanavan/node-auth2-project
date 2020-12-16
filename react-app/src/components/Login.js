@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import * as yup from "yup";
-import schema from "./validation/formSchema";
 import axios from "axios";
 
+import schema from "../validation/formSchema";
 
 ///// INITAL VALUES /////
 const initalFormValues = {
@@ -23,33 +23,35 @@ export default function Login() {
 
 
   ///// EVENT HANDLERS /////
-  const onChange = (name, value) => {
-      validate(name, value);
-      setFormValues({...formValues, [name]: value})
-  }
+  const onChange = event => {
+    const { name, value } = event.target;
+    validate(name, value);
+    setFormValues({ ...formValues, [name]: value});
+  };
 
-  const onSubmit = event => {
-    event.preventDefault()
+  const onSubmit = (event) => {
+    event.preventDefault();
     const newUser = {
-        username: formValues.username,
-        password: formValues.password,
-    }
+      username: formValues.username,
+      password: formValues.password,
+    };
 
-    axios.post("http://localhost:5100/api/auth/register", newUser)
-    .then(response => {
-        console.log(response)
-    })
-    .catch(error => {
-        console.log("error...", error)
-    })
-}
+    axios
+      .post("http://localhost:5100/api/auth/login", newUser)
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log("error...", error);
+      });
+  };
 
   ///// HELPERS /////
   const validate = (name, value) => {
     yup
       .reach(schema, name)
       .validate(value)
-      .then((valid) => {
+      .then(valid => {
           //if validation is successful do not save an error message
           setFormErrors({ ...formErrors, [name]: "" });
         }) 
@@ -82,10 +84,10 @@ export default function Login() {
 
           <h3>Password: </h3>
           <input
-            type="text"
+            type="password"
             name="password"
             placeholder="password"
-            value={formValues.username}
+            value={formValues.password}
             onChange={onChange}
           />
           <br />
